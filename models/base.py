@@ -13,7 +13,7 @@ import lottery.desc
 from platforms.platform import get_platform
 
 
-class Model(abc.ABC, torch.nn.Module):
+class Model(torch.nn.Module, abc.ABC):
     """The base class used by all models in this codebase."""
 
     @staticmethod
@@ -72,7 +72,7 @@ class Model(abc.ABC, torch.nn.Module):
         get_platform().save_model(self.state_dict(), paths.model(save_location, save_step))
 
 
-class DataParallel(Model, torch.nn.DataParallel):
+class DataParallel(torch.nn.DataParallel, Model):
     def __init__(self, module: Model):
         super(DataParallel, self).__init__(module=module)
 
@@ -98,7 +98,7 @@ class DataParallel(Model, torch.nn.DataParallel):
         self.module.save(save_location, save_step)
 
 
-class DistributedDataParallel(Model, torch.nn.parallel.DistributedDataParallel):
+class DistributedDataParallel(torch.nn.parallel.DistributedDataParallel, Model):
     def __init__(self, module: Model, device_ids):
         super(DistributedDataParallel, self).__init__(module=module, device_ids=device_ids)
 
